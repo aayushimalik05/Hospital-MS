@@ -1,356 +1,710 @@
 import mysql.connector as mys
+
 import random
+
 mycon=mys.connect(host="localhost",user="root",passwd="mayoor",database="hospital")
+
 mycursor=mycon.cursor()
+
 if mycon.is_connected()==True:
+
     print("----------WELCOME TO MAYOOR SUPER SPECIALITY HOSPITAL----------")
+
 print("""Do you want to
+
       1.Sign In (Log In)
+
       2.Sign Up(Register)""")
+
 a=int(input("Enter your choice:  "))
+
 if a==2:
+
     print("--------SIGN UP-------")
+
     mycursor.execute("select * from patient_details")
+
     data=mycursor.fetchall()
+
     reg=random.randint(1,10000000)
+
     for i in data:
+
         if i[0]==reg:
+
             reg=random.randint(1,10000000)
+
     name=input("Enter name of patient:  ")
+
     age=int(input("Enter patient's age:  "))
+
     gender=input("Enter patient's gender:  ")
+
     dor=input("Enter Date of Registration in YYYY-MM-DD format:  ")
+
     med=input("Enter ongoing medicines if any, else enter None:  ")
+
     c=input("Enter contact number:  ")
+
     add=input("Enter your permanent address:  ")
+
     doc=input("Enter doctor recommended to you:  ")
+
     mycursor.execute("Insert into patient_details values({},'{}',{},'{}','{}','{}','{}','{}','{}')".format(reg,name,age,gender,dor,med,c,add,doc))
+
     mycon.commit()
+
 else:
+
     print("""--------SIGN IN AS: --------
+
                  1. Admin
+
                  2.Doctor
+
                  3.Patient
+
                  4.Nurse
+
                  5.Worker""")
+
     b=int(input("Enter your choice:  "))
+
     if b==1:
+
         u=input("Enter your username")
+
         p=input("Enter the existing password")
+
         query="select password from login_details where username='{}'".format(u)
+
         mycursor.execute(query)
+
         row=mycursor.fetchone()
+
         if p==row[0]:
+
             print("Admin login successful")
+
             d=int(input("""Which table do you want to access?
+
                                    1.patient_details
+
                                    2.doctor_details
+
                                    3.nurse_details
+
                                    4.other_workers_details
+
                                    5.medical_equipment_inventory
+
                                    6.medicine_inventory
+
                                    7.discharge_summary:    """))
+
             if d==1:
+
                 print("""What operation do you want to perform?
+
                            1.Show Details of patients
+
                            2.Delete any patient's record""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from patient_details")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                         print (i)
+
                 else:
+
                     reg=int(input("Enter Registration number of patient whose record has to be deleted:  "))
+
                     mycursor.execute("delete from patient_details where Registration_number={}".format(reg))
+
                     mycon.commit()
+
             if d ==2:
+
                 print("""What operation do you want to perform?
+
                            1.Show Details of doctors
+
                            2.Add a doctor
+
                            3.Delete data of an existing doctor""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from doctor_details")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                         print (i)
+
                 if e==2:
+
                     name=input("Enter doctor's name")
+
                     sp=input("Enter doctor's specialisation")
+
                     age=int(input("Enter doctor's age"))
+
                     add=input("Enter address")
+
                     con=input("Enter contact number")
+
                     fee=int(input("Enter fee"))
+
                     sal=int(input("Enter monthly salary"))
+
                     mycursor.execute("insert into doctor_details values('{}','{}',{},'{}','{}',{},{})".format(name,sp,age,add,con,fee,sal))
+
                     mycon.commit()
+
                 else:
+
                     name=input("Enter name of doctor whose record has to be deleted")
+
                     mycursor.execute("delete from doctor_details where name='{}'".format(name))
+
                     mycon.commit()
+
             if d==3:
+
                 print("""What operation do you want to perform?
+
                            1.Show Details of Nurses
+
                            2.Add a nurse
+
                            3.Delete data of an existing nurse""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from nurse_details")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                         print (i)
+
                 if e==2:
+
                     name=input("Enter nurse's name")
+
                     age=int(input("Enter nurse's age"))
+
                     add=input("Enter address")
+
                     con=input("Enter contact number")
+
                     sal=int(input("Enter monthly salary"))
+
                     mycursor.execute("insert into nurse_details values('{}',{},'{}','{}',{})".format(name,age,add,con,sal))
+
                     mycon.commit()
+
                 if e==3:
+
                     name=input("Enter name of nurse whose record has to be deleted")
+
                     mycursor.execute("delete from nurse_details where name='{}' ".format(name))
+
                     mycon.commit()
+
             if d==4:
+
                 print("""What operation do you want to perform?
+
                            1.Show Details of Other workers
+
                            2.Add a worker
+
                            3.Delete data of an existing worker""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from other_workers_details")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                          print (i)
+
                 if e==2:
+
                     name=input("Enter worker's name")
+
                     age=int(input("Enter worker's age"))
+
                     add=input("Enter address")
+
                     con=input("Enter contact number")
+
                     sal=int(input("Enter monthly salary"))
+
                     mycursor.execute("insert into other_workers_details values('{}',{},'{}','{}',{})".format(name,age,add,con,sal))
+
                     mycon.commit()
+
                 if e==3:
+
                     name=input("Enter name of worker whose record has to be deleted")
+
                     mycursor.execute("delete from other_workers_details where name='{}' ".format(name))
+
                     mycon.commit()
+
             if d==5:
+
                 print("""What operation do you want to perform?
+
                               1.Show medical_equipment_inventory
+
                               2.Update quantity of an item
+
                               3.Add new equipmwnt """)
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from medical_equipment_inventory")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                          print (i)
+
                 if e==2:
+
                     itemcode=input("Enter item code of equipment whose quantity is to be updated")
+
                     uq=int(input("Enter updated quantity"))
+
                     mycursor.execute("Update medical_equipment_inventory set quantity_left={} where Item_code='{}'".format(uq,itemcode))
+
                     mycon.commit()
+
                 else:
+
                     ic=input("Enter item code")
+
                     iname=input("Enter equipment name")
+
                     p=int(input("Enter price"))
+
                     qty=int(input("Enter quantity left in stock"))
+
                     mycursor.execute("insert into medical_equipment_inventory values('{}','{}',{},{})".format(ic,iname,p,qty))
+
                     mycon.commit()
+
             if d==6:
+
                 print("""What operation do you want to perform?
+
                               1.Show medicine_inventory
+
                               2.Update quantity of medicines left in stock
+
                               3.Add new medicine""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from medicine_inventory")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                          print (i)
+
                 if e==2:
+
                     itemcode=int(input("Enter medicine code whose quantity is to be updated"))
+
                     uq=int(input("Enter updated quantity"))
+
                     mycursor.execute("Update medicine_inventory set quantity_left={} where medicine_code={}".format(uq,itemcode))
+
                     mycon.commit()
+
                 else:
+
                     medc=int(input("Enter item code"))
+
                     iname=input("Enter medicine name")
+
                     eff=input("Enter effect of medicine")
+
                     p=int(input("Enter price"))
+
                     qty=int(input("Enter quantity left in stock"))
+
                     mycursor.execute("insert into medicine_inventory values({},'{}','{}',{},{})".format(medc,iname,eff,p,qty))
+
                     mycon.commit()
+
             if d==7:
+
                 print("""What operation do you want to perform?
+
                               1.Show discharge_summary
+
                               2.Update bill dues
+
                               3.Process Discharge""")
+
                 e=int(input("Enter your choice:   "))
+
                 if e==1:
+
                     mycursor.execute("select * from discharge_summary")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                          print (i)
+
                 if e==2:
+
                     reg=int(input("Enter Registration number of patient whose bill dues are to be updated:  "))
+
                     bd=int(input("Enter updated bill due"))
+
                     mycursor.execute("Update discharge_summary set Bill_dues={} where Registration_number={}".format(bd,reg))
+
                     mycon.commit()
+
                 else:
+
                     reg=int(input("Enter Registration number of patient whose discharge is to be processed:  "))
+
                     mycursor.execute("select * from discharge_summary")
+
                     row=mycursor.fetchall()
+
                     for i in row:
+
                          if i[0]==reg:
+
                             if i[4]!=0:
+
                                  print("Please clear the bill at the counter. You are requested to pay Rs.",i[4])
+
                             else:
+
                                 print("Discharge successfully processed")
+
     if b==2:
+
         u=input("Enter your username")
+
         p=input("Enter the existing password")
+
         query="select password from login_details where username='{}' ".format(u)
+
         mycursor.execute(query)
+
         row=mycursor.fetchone()
+
         if p != row[0]:
+
             print("Password doesn't match")
+
         if p==row[0]:
+
             print(" Doctor login successful")
+
             print("""What operation do you want to perform?
+
                           1.View patient details
+
                           2.View patients past medical history
+
                           3.View discharge summary
+
                           4.Update personal data""")
+
             f=int(input("Enter your choice"))
+
             if f==1:
+
                 n=input("Enter your name")
+
                 mycursor.execute("select * from patient_details where Doctor_recommended='{}'".format(n))
+
                 row=mycursor.fetchall()
+
                 for i in row:
+
                     print (i)
+
             if f==2:
+
                 reg=int(input("Enter patient's registration number"))
+
                 mycursor.execute("select * from past_medical_history where Registration_number={}".format(reg))
+
                 row=mycursor.fetchone()
+
                 print(row)
+
             if f==3:
+
                 reg=int(input("Enter patient's registration number"))
+
                 mycursor.execute("select * from discharge_summary where Registration_number={}".format(reg))
+
                 row=mycursor.fetchone()
+
                 print(row)
+
             if f==4:
+
                 print("""What do you want to update?
+
                              1.Age
+
                              2.Address
+
                              3.Contact""")
+
                 g=int(input("Enter your choice:  "))
+
                 m=input("Enter your name")
+
                 if g==1:
+
                     new=int(input("Enter updated age: "))
+
                     mycursor.execute("update doctor_details set age={} where name='{}'".format(new,m))
+
                     mycon.commit()
+
                 if g==2:
+
                     new=input("Enter updated address: ")
+
                     mycursor.execute("update doctor_details set address='{}' where name='{}'".format(new,m))
+
                     mycon.commit()
+
                 if g==3:
+
                     new=input("Enter updated contact: ")
+
                     mycursor.execute("update doctor_details set contact={} where name='{}'".format(new,m))
+
                     mycon.commit()
+
     if b==3:
+
         u=input("Enter your username")
+
         p=input("Enter the existing password")
+
         query="select password from login_details where username='{}' ".format(u)
+
         mycursor.execute(query)
+
         row=mycursor.fetchone()
+
         if p != row[0]:
+
             print("Password doesn't match")
+
         if p==row[0]:
+
             print(" Patient login successful")
+
             print("""What operation do you want to perform?
+
                         1.View your discharge summary
+
                         2.Update your personal data""")
+
             h=int(input("Enter your choice"))
+
             if h==1:
+
                 reg=int(input("Enter yout registration number"))
+
                 mycursor.execute("select * from discharge_summary where Registration_number={}".format(reg))
+
                 row=mycursor.fetchone()
+
                 print(row)
+
             else:
+
                 print("""What do you want to update?
+
                           1.Age
+
                           2.Contact Number
+
                           3.Address""")
+
                 j=int(input("Enter your choice:  "))
+
                 m=input("Enter your name")
+
                 if j==1:
+
                     new=int(input("Enter updated age: "))
+
                     mycursor.execute("update patient_details set Age={} where Name='{}'".format(new,m))
+
                     mycon.commit()
+
                 if j==2:
+
                     new=input("Enter updated address: ")
+
                     mycursor.execute("update patient_details set Address='{}' where Name='{}'".format(new,m))
+
                     mycon.commit()
+
                 if j==3:
+
                     new=input("Enter updated contact: ")
+
                     mycursor.execute("update patient_details set Contact_Number='{}' where Name='{}'".format(new,m))
+
                     mycon.commit()
+
     if b==4:
+
         u=input("Enter your username")
+
         p=input("Enter the existing password")
+
         query="select password from login_details where username='{}' ".format(u)
+
         mycursor.execute(query)
+
         row=mycursor.fetchone()
+
         if p != row[0]:
+
             print("Password doesn't match")
+
         if p==row[0]:
+
             print(" Nurse login successful")
+
             print("""What data do you want to update?
+
                   1.Age
+
                   2.Address
+
                   3.Contact Number""")
+
             k=int(input("Enter your choice:   "))
+
             m=input("Enter your name:  ")
+
             if k==1:
+
                 new=int(input("Enter updated age: "))
+
                 mycursor.execute("update nurse_details set age={} where name='{}'".format(new,m))
+
                 mycon.commit()
+
             if k==2:
+
                 new=input("Enter updated address: ")
+
                 mycursor.execute("update nurse_details set address='{}' where name='{}'".format(new,m))
+
                 mycon.commit()
+
             if k==3:
+
                 new=input("Enter updated contact: ")
+
                 mycursor.execute("update nurse_details set contact={} where name='{}'".format(new,m))
+
                 mycon.commit()
+
     if b==5:
+
         u=input("Enter your username")
+
         p=input("Enter the existing password")
+
         query="select password from login_details where username='{}' ".format(u)
+
         mycursor.execute(query)
+
         row=mycursor.fetchone()
+
         if p != row[0]:
+
             print("Password doesn't match")
+
         if p==row[0]:
+
             print(" Worker login successful")
+
             print("""What data do you want to update?
+
                   1.Age
+
                   2.Address
+
                   3.Contact Number""")
+
             l=int(input("Enter your choice:   "))
+
             m=input("Enter your name:  ")
+
             if l==1:
+
                 new=int(input("Enter updated age: "))
+
                 mycursor.execute("update worker_details set age={} where name='{}'".format(new,m))
+
                 mycon.commit()
+
             if l==2:
+
                 new=input("Enter updated address: ")
+
                 mycursor.execute("update worker_details set address='{}' where name='{}'".format(new,m))
+
                 mycon.commit()
+
             if l==3:
+
                 new=input("Enter updated contact: ")
+
                 mycursor.execute("update worker_details set contact={} where name='{}'".format(new,m))
-                mycon.commit()
+
+                mycon.commit() 
 
